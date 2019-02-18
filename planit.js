@@ -175,52 +175,47 @@ done = function (row) {
 
 function isIncomplete(_, row) {
     const descriptionLength = $(row).find(".description").val().length
-    
     const actualTimeLength = $(row).find(".actual.time").text().length
-    console.log('descriptionLength actualTimeLength:'+ descriptionLength +" "+actualTimeLength);
+
     return  descriptionLength && (!actualTimeLength);
 }
 
 save = function () {
     const rows = $("[id^=tr]");
-    console.log('rows:'+rows);
-    console.log('rows.first():'+rows.first());
+
     const incompleteRows = rows.filter(isIncomplete)
-    console.log("incompleteRows.length:"+incompleteRows.length)
-    console.log("incompleteRows.first():"+incompleteRows.first())
-    const firstRow = rows.first();
-    const importance = firstRow.find(".importance").val();
-    const urgency = firstRow.find(".urgency").val();
-    const ptime = firstRow.find(".planned.time").val();
-    const description = firstRow.find(".description").val();
-    const atime = firstRow.find(".actual.time").val();
-    console.log("atime:"+atime);
-    const task = {
-        "importance": importance,
-        "urgency": urgency,
-        "ptime": ptime,
-        "atime": atime,
-        "description": description
-    }
-    writeToDb(task);
+
+    // const firstRow = rows.first();
+    const tasks = $.map(incompleteRows, function( row, i ) {
+        console.log ("row i: "+ row +" "+ i);
+        const importance = $(row).find(".importance").val();
+        const urgency = $(row).find(".urgency").val();
+        const ptime = $(row).find(".planned.time").val();
+        const description = $(row).find(".description").val();
+        const atime = $(row).find(".actual.time").val();
+        return ({
+            "importance": importance,
+            "urgency": urgency,
+            "ptime": ptime,
+            "atime": atime,
+            "description": description
+        });
+    });
+    writeToDb(tasks);
     butterbar("Incomplete tasks saved.  ");
 }
 
 butterbar = function (message) {
     const pbutterbar = $("p.butterbar")
     pbutterbar.text(new Date().toISOString() + ": " +message);
-    alert ("butter"+pbutterbar.text());
-
 }
 
-writeToDb = function(task) {
-    const taskString = JSON.stringify(task)
-    alert (taskString)
-
+writeToDb = function(record) {
+    const recordString = JSON.stringify(record)
     const userAction = async () => {
         const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
             method: 'POST',
-            body: taskString, // string or object
+            body: recordString, // string or object
         });
         const myJson = await response.json();
         const key = myJson.name
