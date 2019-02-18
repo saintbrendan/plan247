@@ -1,0 +1,111 @@
+/* No spin button in time*/
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/*
+input.description {
+  width: 410px;
+}
+*/
+
+/* table, th, td {
+    border: 1px solid black;
+} */
+table {
+  border-collapse: collapse;
+}
+
+td,
+th {
+  padding: 0px;
+}
+
+table {
+  width: 100%;
+}
+th.greedy, td.greedy {
+  width: 100%;
+}
+input.description {
+  width: 100%;
+}
+th,td {
+  white-space:nowrap;
+}
+#headerrow0 {
+  font-size: x-small;
+}
+
+.oneCharWide {
+  width: 12px;
+}
+
+.twoCharWide {
+  width: 24px;
+}
+
+.threeCharWide {
+  width: 36px;
+}
+
+th {
+  text-align: left;
+}
+
+.number {
+  text-align: right;
+}
+
+.orange600 {
+  color: #fb8c00;
+}
+
+.red {
+  color: Red;
+}
+
+.light-grey {
+  color: LightGrey;
+}
+
+.blue {
+  color: Blue;
+}
+
+.done {
+  background-color: LightBlue;
+  width: 100px;
+  height: 100px;
+}
+
+.save {
+  background-color: LightGreen;
+  width: 100px;
+  height: 100px;
+}
+
+.happy {
+  color: #315a60;
+}
+
+.lime-green {
+  color: LimeGreen;
+}
+
+.dark-cyan {
+  color: DarkCyan;
+}
+.grey {
+  color: Gray;
+}
+
+i.material-icons {
+  font-size: 17px;
+}
+
+.butterbar {
+  background-color:rgb(227, 252, 227);
+}
