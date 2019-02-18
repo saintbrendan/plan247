@@ -77,14 +77,20 @@ th {
 
 .done {
   background-color: LightBlue;
-  width: 100px;
-  height: 100px;
+  width: 72px;
+  height: 72px;
 }
 
 .save {
   background-color: LightGreen;
-  width: 100px;
-  height: 100px;
+  width: 72px;
+  height: 72px;
+}
+
+.load {
+  background-color: lightpink;
+  width: 72px;
+  height: 72px;
 }
 
 .happy {

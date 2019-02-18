@@ -7,6 +7,8 @@
     <button id="working_to_planned" type="button">Working to Planned</button>
     <table class="schedule">
 
+
+
       <tr id='tr0'>
         <td><i class='material-icons light-grey insert'>add_circle</i></td>
         <td><input type='text' class='importance oneCharWide' maxLength='1' onClick='this.select();' onInput='this.select();' /></td>
@@ -29,11 +31,11 @@
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
         <td><i class='material-icons light-grey delete '>remove_circle</i></td>
-        <td rowspan="6">
+        <td rowspan="3">
           <button class="done">
             Done!
           </button>
-        </td> 
+        </td>
       </tr>
   
       <tr id='tr1'>
@@ -57,7 +59,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr2'>
@@ -81,7 +83,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr3'>
@@ -105,7 +107,12 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
+        <td rowspan="3" class="button">
+          <button id="load" class="load">
+            Load
+          </button>
+        </td>
       </tr>
   
       <tr id='tr4'>
@@ -129,7 +136,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr5'>
@@ -153,7 +160,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr6'>
@@ -177,8 +184,8 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
-        <td rowspan="6" class="button">
+        <td><i class='material-icons red delete '>remove_circle</i></td>
+        <td rowspan="3" class="button">
           <button id="save" class="save">
             Save
           </button>
@@ -206,7 +213,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr8'>
@@ -230,7 +237,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr9'>
@@ -254,7 +261,7 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
   
       <tr id='tr10'>
@@ -278,9 +285,8 @@
         <td class='ahead number'></td>
         <td class='aheadoftask dark-cyan'></td>
         <td class='aheadofschedule dark-cyan'></td>
-        <td><i class='material-icons red delete '>remove_circle</i></td> 
+        <td><i class='material-icons red delete '>remove_circle</i></td>
       </tr>
-
 
     </table>
 
@@ -293,17 +299,24 @@
 
 <!--
 def doneButton ='''
-      <td rowspan="6">
+      <td rowspan="3">
         <button class="done">
           Done!
         </button>
       </td>'''
+def loadButton ='''
+      <td rowspan="3" class="button">
+        <button id="load" class="load">
+          Load
+        </button>
+      </td>'''
 def saveButton ='''
-      <td rowspan="6" class="button">
+      <td rowspan="3" class="button">
         <button id="save" class="save">
           Save
         </button>
       </td>'''
+
 11.times {
     def x = """
     <tr id='tr$it'>
@@ -327,7 +340,7 @@ def saveButton ='''
       <td class='ahead number'></td>
       <td class='aheadoftask dark-cyan'></td>
       <td class='aheadofschedule dark-cyan'></td>
-      <td><i class='material-icons ${it?'red':'light-grey'} delete '>remove_circle</i></td>${it?'':doneButton} ${it==6?saveButton:''}
+      <td><i class='material-icons ${it?'red':'light-grey'} delete '>remove_circle</i></td>${it?'':doneButton}${it==3?loadButton:''}${it==6?saveButton:''}
     </tr>"""
    println x
 }

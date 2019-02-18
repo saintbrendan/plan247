@@ -1,3 +1,5 @@
+var globalFirebaseKey;
+
 $(document).ready(function () {
     const myBody = `[{
    "alanisawesome": {
@@ -14,8 +16,6 @@ $(document).ready(function () {
         });
         const myJson = await response.json();
         const key = myJson.name
-        // do something with myJson
-        ///alert ("myJson:"+JSON.stringify(myJson ) + " "+ key);
         $("#a1").html("works?")
     }
     userAction();
@@ -53,6 +53,9 @@ $(document).ready(function () {
     });
     $(".save").click(function (e) {
         save();
+    });
+    $(".load").click(function (e) {
+        load();
     });
     $("input.description").keydown(function (e) {
         var keyCode = e.keyCode || e.which;
@@ -180,6 +183,35 @@ function isIncomplete(_, row) {
     return  descriptionLength && (!actualTimeLength);
 }
 
+load = function () {
+    // with the globalkey, retrieve that object from firebase
+    // populate the UI with the contents of that array.
+    readFromDb(globalFirebaseKey);
+}
+
+readFromDb = function(key) {
+    ///const recordString = JSON.stringify(record)
+    const userAction = async () => {
+        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+globalFirebaseKey+'.json'
+        console.log("urlFirebase:"+urlFirebase);
+        const response = await fetch(urlFirebase, {
+            method: 'GET',
+            ///body: recordString, // string or object
+        });
+        const tasks = await response.json();
+        console.log("myJson:"+JSON.stringify(tasks));
+        butterbar("Loaded " + tasks.length  + " records");
+        const rows = $("[id^=tr]");
+        for (var i=0, len=tasks.length; i < len; i++){
+            var task = tasks[i]
+            console.log(task + " description:"+task.description);
+            $(rows[i]).find(".description").val(task.description);
+        }
+
+    }
+    userAction();
+}
+
 save = function () {
     const rows = $("[id^=tr]");
 
@@ -218,7 +250,8 @@ writeToDb = function(record) {
             body: recordString, // string or object
         });
         const myJson = await response.json();
-        const key = myJson.name
+        globalFirebaseKey = myJson.name
+        console.log("globalFirebaseKey:"+globalFirebaseKey);
         $("#a1").html("works?")
     }
     userAction();
