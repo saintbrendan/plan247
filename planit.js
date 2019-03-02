@@ -1,18 +1,19 @@
 var globalFirebaseKey;
 
 $(document).ready(function () {
-    const myBody = `[{
-   "alanisawesome": {
-     "name": "Alan X. Turing",
-     "birthday": "June 23, 1911"
-   }
- }, 5]`;
+    const myBody = {
+        "brendan": {
+            "name": "Alan X. Turing",
+            "birthday": "July 23, 1965",
+            "tasks": [6]
+        }
+    };
     // https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json
     // https://planit-48748.firebaseio.com/rest/task.json
     const userAction = async () => {
         const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
-            method: 'POST',
-            body: myBody, // string or object
+            method: 'PUT',
+            body: JSON.stringify(myBody), // string or object
         });
         const myJson = await response.json();
         const key = myJson.name
@@ -180,7 +181,7 @@ function isIncomplete(_, row) {
     const descriptionLength = $(row).find(".description").val().length
     const actualTimeLength = $(row).find(".actual.time").text().length
 
-    return  descriptionLength && (!actualTimeLength);
+    return descriptionLength && (!actualTimeLength);
 }
 
 load = function () {
@@ -189,22 +190,22 @@ load = function () {
     readFromDb(globalFirebaseKey);
 }
 
-readFromDb = function(key) {
+readFromDb = function (key) {
     ///const recordString = JSON.stringify(record)
     const userAction = async () => {
-        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+globalFirebaseKey+'.json'
-        console.log("urlFirebase:"+urlFirebase);
+        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/' + globalFirebaseKey + '.json'
+        console.log("urlFirebase:" + urlFirebase);
         const response = await fetch(urlFirebase, {
             method: 'GET',
             ///body: recordString, // string or object
         });
         const tasks = await response.json();
-        console.log("myJson:"+JSON.stringify(tasks));
-        butterbar("Loaded " + tasks.length  + " records");
+        console.log("myJson:" + JSON.stringify(tasks));
+        butterbar("Loaded " + tasks.length + " records");
         const rows = $("[id^=tr]");
-        for (var i=0, len=tasks.length; i < len; i++){
+        for (var i = 0, len = tasks.length; i < len; i++) {
             var task = tasks[i]
-            console.log(task + " description:"+task.description);
+            console.log(task + " description:" + task.description);
             $(rows[i]).find(".description").val(task.description);
         }
 
@@ -218,8 +219,8 @@ save = function () {
     const incompleteRows = rows.filter(isIncomplete)
 
     // const firstRow = rows.first();
-    const tasks = $.map(incompleteRows, function( row, i ) {
-        console.log ("row i: "+ row +" "+ i);
+    const tasks = $.map(incompleteRows, function (row, i) {
+        console.log("row i: " + row + " " + i);
         const importance = $(row).find(".importance").val();
         const urgency = $(row).find(".urgency").val();
         const ptime = $(row).find(".planned.time").val();
@@ -239,10 +240,10 @@ save = function () {
 
 butterbar = function (message) {
     const pbutterbar = $("p.butterbar")
-    pbutterbar.text(new Date().toISOString() + ": " +message);
+    pbutterbar.text(new Date().toISOString() + ": " + message);
 }
 
-writeToDb = function(record) {
+writeToDb = function (record) {
     const recordString = JSON.stringify(record)
     const userAction = async () => {
         const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
@@ -251,7 +252,7 @@ writeToDb = function(record) {
         });
         const myJson = await response.json();
         globalFirebaseKey = myJson.name
-        console.log("globalFirebaseKey:"+globalFirebaseKey);
+        console.log("globalFirebaseKey:" + globalFirebaseKey);
         $("#a1").html("works?")
     }
     userAction();
