@@ -1,25 +1,7 @@
 var globalFirebaseKey;
 
+// https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json
 $(document).ready(function () {
-    const myBody = {
-        "brendan": {
-            "name": "Alan X. Turing",
-            "birthday": "July 23, 1965",
-            "tasks": [6]
-        }
-    };
-    // https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json
-    // https://planit-48748.firebaseio.com/rest/task.json
-    const userAction = async () => {
-        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
-            method: 'PUT',
-            body: JSON.stringify(myBody), // string or object
-        });
-        const myJson = await response.json();
-        const key = myJson.name
-        $("#a1").html("works?")
-    }
-    userAction();
     $(".planned.time").bind("wheel", updatePlannedTime);
     $(".planned.time").on("input", updatePlannedTime);
     var now = new Date();
@@ -234,29 +216,32 @@ save = function () {
             "description": description
         });
     });
-    writeToDb(tasks);
+    saveOpenTasks(tasks);
     butterbar("Incomplete tasks saved.  ");
+}
+
+saveOpenTasks = function(tasks) {
+    const myBody = {
+        "brendan": {
+            "description": "task list",
+            "tasks": tasks
+        }
+    };
+    const userAction = async () => {
+        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
+            method: 'PUT',
+            body: JSON.stringify(myBody), // string or object
+        });
+        const myJson = await response.json();
+        const key = myJson.name
+        $("#a1").html("works?")
+    }
+    userAction();
 }
 
 butterbar = function (message) {
     const pbutterbar = $("p.butterbar")
     pbutterbar.text(new Date().toISOString() + ": " + message);
-}
-
-writeToDb = function (record) {
-    const recordString = JSON.stringify(record)
-    const userAction = async () => {
-        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
-            method: 'POST',
-            body: recordString, // string or object
-        });
-        const myJson = await response.json();
-        globalFirebaseKey = myJson.name
-        console.log("globalFirebaseKey:" + globalFirebaseKey);
-        $("#a1").html("works?")
-    }
-    userAction();
-
 }
 
 workingToPlanned = function () {
