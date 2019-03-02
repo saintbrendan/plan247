@@ -88,6 +88,11 @@ $(document).ready(function () {
         clone.remove("td#sss");
     });
 
+    $(".importance").blur(save)
+    $(".urgency").blur(save)
+    $(".planned.time").blur(save)
+    $(".description").blur(save)
+
     var h = $(".actual.time")
         .filter(function (index) {
             return $(this).html() == "";
@@ -175,7 +180,7 @@ load = function () {
 readFromDb = function (key) {
     ///const recordString = JSON.stringify(record)
     const userAction = async () => {
-        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/' + globalFirebaseKey + '.json'
+        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/brendan/tasks.json'
         console.log("urlFirebase:" + urlFirebase);
         const response = await fetch(urlFirebase, {
             method: 'GET',
@@ -183,12 +188,16 @@ readFromDb = function (key) {
         });
         const tasks = await response.json();
         console.log("myJson:" + JSON.stringify(tasks));
-        butterbar("Loaded " + tasks.length + " records");
+        butterbar("Loaded 2" + tasks.length + " records");
         const rows = $("[id^=tr]");
         for (var i = 0, len = tasks.length; i < len; i++) {
             var task = tasks[i]
             console.log(task + " description:" + task.description);
+            $(rows[i]).find(".importance").val(task.importance);
+            $(rows[i]).find(".urgency").val(task.urgency);
+            $(rows[i]).find(".planned.time").val(task.ptime);
             $(rows[i]).find(".description").val(task.description);
+            $(rows[i]).find(".actual.time").val(task.atime);
         }
 
     }
@@ -223,7 +232,7 @@ save = function () {
 saveOpenTasks = function(tasks) {
     const myBody = {
         "brendan": {
-            "description": "task list",
+            "description": "task list change",
             "tasks": tasks
         }
     };
