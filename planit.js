@@ -88,10 +88,12 @@ $(document).ready(function () {
         clone.remove("td#sss");
     });
 
-    $(".importance").blur(save)
-    $(".urgency").blur(save)
-    $(".planned.time").blur(save)
-    $(".description").blur(save)
+    $(".importance").blur(save);
+    $(".urgency").blur(save);
+    $(".planned.time").blur(save);
+    $(".description").blur(save);
+
+    $("#firstname").blur(load);
 
     var h = $(".actual.time")
         .filter(function (index) {
@@ -165,8 +167,8 @@ done = function (row) {
 };
 
 function isIncomplete(_, row) {
-    const descriptionLength = $(row).find(".description").val().length
-    const actualTimeLength = $(row).find(".actual.time").text().length
+    const descriptionLength = $(row).find(".description").val().length;
+    const actualTimeLength = $(row).find(".actual.time").text().length;
 
     return descriptionLength && (!actualTimeLength);
 }
@@ -178,13 +180,12 @@ load = function () {
 }
 
 readFromDb = function (key) {
-    ///const recordString = JSON.stringify(record)
     const userAction = async () => {
-        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/brendan/tasks.json'
+        const name = $("#firstname").val()
+        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+name+'/tasks.json'
         console.log("urlFirebase:" + urlFirebase);
         const response = await fetch(urlFirebase, {
             method: 'GET',
-            ///body: recordString, // string or object
         });
         const tasks = await response.json();
         console.log("myJson:" + JSON.stringify(tasks));
@@ -230,20 +231,31 @@ save = function () {
 }
 
 saveOpenTasks = function(tasks) {
+    const firstname = $("#firstname").val();
     const myBody = {
-        "brendan": {
+        name: {
             "description": "task list change",
             "tasks": tasks
         }
     };
+    const yourTasks = {};
+    yourTasks[firstname] = {
+        "description": "task list change",
+        "tasks": tasks
+    };
+    const theTasks = {
+        "description": "task list change",
+        "tasks": tasks
+    };
+    console.log("yourTasks "+JSON.stringify(yourTasks))
+    console.log("myBody "+JSON.stringify(myBody))
     const userAction = async () => {
-        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users.json', {
+        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+firstname+'.json', {
             method: 'PUT',
-            body: JSON.stringify(myBody), // string or object
+            body: JSON.stringify(theTasks), // string or object
         });
         const myJson = await response.json();
         const key = myJson.name
-        $("#a1").html("works?")
     }
     userAction();
 }
