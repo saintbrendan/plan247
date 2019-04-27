@@ -6,23 +6,36 @@ $(document).ready(function () {
     $(".planned.time").bind("wheel", updatePlannedTime);
     $(".planned.time").on("input", updatePlannedTime);
 
-    // provider = new firebase.auth.GoogleAuthProvider();
-    // firebase.auth().signInWithPopup(provider).then(function(result) {
-    //     // This gives you a Google Access Token. You can use it to access the Google API.
-    //     var token = result.credential.accessToken;
-    //     // The signed-in user info.
-    //     var user = result.user;
-    //     // ...
-    //   }).catch(function(error) {
-    //     // Handle Errors here.
-    //     var errorCode = error.code;
-    //     var errorMessage = error.message;
-    //     // The email of the user's account used.
-    //     var email = error.email;
-    //     // The firebase.auth.AuthCredential type that was used.
-    //     var credential = error.credential;
-    //     // ...
-    //   });
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDD3AjCv1X0a1Nt4K9HEKvnSWPr_ZN6_3w",
+        authDomain: "planit-48748.firebaseapp.com",
+        databaseURL: "https://planit-48748.firebaseio.com",
+        projectId: "planit-48748",
+        storageBucket: "planit-48748.appspot.com",
+        messagingSenderId: "578139525428"
+    };
+    firebase.initializeApp(config);
+
+
+    provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        console.log("the user is " + JSON.stringify(result.user))
+        // ...
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
 
     var now = new Date();
     var nowHHMM = now.toHHMM();
