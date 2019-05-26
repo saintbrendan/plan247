@@ -75,10 +75,14 @@ th {
   color: Blue;
 }
 
+td.align-top {
+  vertical-align: top;
+}
+
 .done {
   background-color: LightBlue;
   width: 72px;
-  height: 72px;
+  height: 96px;
 }
 
 .save {
