@@ -120,12 +120,11 @@ $(document).ready(function () {
         clone.find("td.button").removeAttr("rowspan");
         clone.remove("td#sss");
     });
-
+    $(".material-icons.delete").click(deleteRow);
     $(".importance").blur(save);
     $(".urgency").blur(save);
     $(".planned.time").blur(save);
     $(".description").blur(save);
-
     $("#firstname").blur(load);
 
     var h = $(".actual.time")
@@ -159,9 +158,17 @@ firstEmptyActualTime = function () {
         .first();
 };
 
+deleteRow = function(row) {
+    console.log("deleteRow: this "+this);
+    var thisRow = $(this).parents("tr");
+    var nextRow = thisRow.next("tr");
+    $(thisRow).remove();
+    updateStartDates(nextRow)
+
+};
+
 done = function (row) {
     var astart = row.find(".actual.start");
-    var astartIsEmpty = isEmpty(astart.val());
     if (!isEmpty(astart.val())) {
         var now = new Date();
         var aend = row.find(".actual.end");
@@ -169,7 +176,6 @@ done = function (row) {
         var actualStartTime = getDateFromSelector(astart);
         var elapsedTime = now.getTime() - actualStartTime.getTime();
         var elapsedTimeHHMM = HHMMfromMilliseconds(elapsedTime);
-        ////$(e.target).html(elapsedTimeHHMM);
         row.find(".actual.time").html(elapsedTimeHHMM);
         var plannedTime = parseInt(row.find(".planned.time").val());
         var faster = Math.round(plannedTime - elapsedTime / (60 * 1000));
@@ -280,8 +286,6 @@ saveOpenTasks = function(tasks) {
         "description": "task list change",
         "tasks": tasks
     };
-    console.log("yourTasks "+JSON.stringify(yourTasks))
-    console.log("myBody "+JSON.stringify(myBody))
     const userAction = async () => {
         const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+firstname+'.json', {
             method: 'PUT',
@@ -354,8 +358,6 @@ updateEndDate = function (row, cssclass, minutes) {
 updatePlannedTime = function (e) {
     $(e.target).focus();
     var parent = $(e.target).parents("tr");
-    ////console.log("p0: "+parent[0]);  //HTMLTableRowElement
-    ////var mod = e.originalEvent.wheelDelta / 120 > 0 ? 1 : -1;
     var timeval = $(e.target).val();
     var minutes = (timeval.length === 0 ? 0 : parseInt(timeval));
     minutes = minutes < 0 ? 0 : minutes;
