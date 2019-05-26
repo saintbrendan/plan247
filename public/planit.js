@@ -121,6 +121,7 @@ $(document).ready(function () {
         clone.remove("td#sss");
     });
     $(".material-icons.delete").click(deleteRow);
+    $(".material-icons.up").click(moveUp);
     $(".importance").blur(save);
     $(".urgency").blur(save);
     $(".planned.time").blur(save);
@@ -150,6 +151,13 @@ Date.prototype.toHHMM =
         return this.toTimeString().substr(0, 5);
     };
 
+moveUp = function() {
+    var thisRow = $(this).parents("tr");
+    var previousRow = thisRow.prev("tr");
+    $(previousRow).before($(thisRow));
+    updateStartDates(thisRow);
+}
+
 firstEmptyActualTime = function () {
     return $(".actual.time")
         .filter(function (index) {
@@ -159,12 +167,10 @@ firstEmptyActualTime = function () {
 };
 
 deleteRow = function(row) {
-    console.log("deleteRow: this "+this);
     var thisRow = $(this).parents("tr");
     var nextRow = thisRow.next("tr");
     $(thisRow).remove();
     updateStartDates(nextRow)
-
 };
 
 done = function (row) {
@@ -385,9 +391,11 @@ updateStartDates = function (row) {
         return;
     }
     var minutes = minutes_text.length === 0 ? 0 : parseInt(minutes_text);
+    var getDateFromSelectr = getDateFromSelector(row.find(".working.start")); ////
     var wend = getDateFromSelector(row.find(".working.start"))
         .addMinutes(minutes)
         .toHHMM();
+    console.log("wend "+ wend +"   getDateFromSelectr "+ getDateFromSelectr)
     row.find(".working.end").val(wend);
     if (previous_aend || previous_wend) {
         var uncle = row.next("tr");
