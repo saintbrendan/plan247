@@ -17,7 +17,6 @@ $(document).ready(function () {
     };
     firebase.initializeApp(config);
 
-
     provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -247,12 +246,13 @@ readFromDb = function (key) {
         const rows = $("[id^=tr]");
         for (var i = 0, len = tasks.length; i < len; i++) {
             var task = tasks[i]
+            let row = $(rows[i+2]) // leave first 2 rows unchanged
             console.log(task + " description:" + task.description);
-            $(rows[i]).find(".importance").val(task.importance);
-            $(rows[i]).find(".urgency").val(task.urgency);
-            $(rows[i]).find(".planned.time").val(task.ptime);
-            $(rows[i]).find(".description").val(task.description);
-            $(rows[i]).find(".actual.time").val(task.atime);
+            row.find(".importance").val(task.importance);
+            row.find(".urgency").val(task.urgency);
+            row.find(".planned.time").val(task.ptime);
+            row.find(".description").val(task.description);
+            row.find(".actual.time").val(task.atime);
         }
 
     }
