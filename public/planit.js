@@ -19,14 +19,14 @@ $(document).ready(function () {
 
 
     provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then(function(result) {
+    firebase.auth().signInWithPopup(provider).then(function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
         console.log("the user is " + JSON.stringify(result.user))
         // ...
-      }).catch(function(error) {
+    }).catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -35,7 +35,7 @@ $(document).ready(function () {
         // The firebase.auth.AuthCredential type that was used.
         var credential = error.credential;
         // ...
-      });
+    });
 
     var now = new Date();
     var nowHHMM = now.toHHMM();
@@ -122,6 +122,7 @@ $(document).ready(function () {
     });
     $(".material-icons.delete").click(deleteRow);
     $(".material-icons.up").click(moveUp);
+    $(".material-icons.down").click(moveDown);
     $(".importance").blur(save);
     $(".urgency").blur(save);
     $(".planned.time").blur(save);
@@ -151,11 +152,19 @@ Date.prototype.toHHMM =
         return this.toTimeString().substr(0, 5);
     };
 
-moveUp = function() {
+
+moveUp = function () {
     var thisRow = $(this).parents("tr");
     var previousRow = thisRow.prev("tr");
     $(previousRow).before($(thisRow));
     updateStartDates(thisRow);
+}
+
+moveDown = function () {
+    var thisRow = $(this).parents("tr");
+    var nextRow = thisRow.next("tr");
+    $(thisRow).before($(nextRow));
+    updateStartDates(nextRow);
 }
 
 firstEmptyActualTime = function () {
@@ -166,7 +175,7 @@ firstEmptyActualTime = function () {
         .first();
 };
 
-deleteRow = function(row) {
+deleteRow = function (row) {
     var thisRow = $(this).parents("tr");
     var nextRow = thisRow.next("tr");
     $(thisRow).remove();
@@ -227,7 +236,7 @@ load = function () {
 readFromDb = function (key) {
     const userAction = async () => {
         const name = $("#firstname").val()
-        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+name+'/tasks.json'
+        const urlFirebase = 'https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/' + name + '/tasks.json'
         console.log("urlFirebase:" + urlFirebase);
         const response = await fetch(urlFirebase, {
             method: 'GET',
@@ -275,7 +284,7 @@ save = function () {
     butterbar("Incomplete tasks saved.  ");
 }
 
-saveOpenTasks = function(tasks) {
+saveOpenTasks = function (tasks) {
     const firstname = $("#firstname").val();
     const myBody = {
         name: {
@@ -293,7 +302,7 @@ saveOpenTasks = function(tasks) {
         "tasks": tasks
     };
     const userAction = async () => {
-        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/'+firstname+'.json', {
+        const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/' + firstname + '.json', {
             method: 'PUT',
             body: JSON.stringify(theTasks), // string or object
         });
@@ -395,7 +404,7 @@ updateStartDates = function (row) {
     var wend = getDateFromSelector(row.find(".working.start"))
         .addMinutes(minutes)
         .toHHMM();
-    console.log("wend "+ wend +"   getDateFromSelectr "+ getDateFromSelectr)
+    console.log("wend " + wend + "   getDateFromSelectr " + getDateFromSelectr)
     row.find(".working.end").val(wend);
     if (previous_aend || previous_wend) {
         var uncle = row.next("tr");
