@@ -242,18 +242,27 @@ readFromDb = function (key) {
         });
         const tasks = await response.json();
         console.log("myJson:" + JSON.stringify(tasks));
-        butterbar("Loaded 2" + tasks.length + " records");
+        butterbar("Loaded " + tasks.length + " records");
         const rows = $("[id^=tr]");
-        for (var i = 0, len = tasks.length; i < len; i++) {
-            var task = tasks[i]
-            let row = $(rows[i+2]) // leave first 2 rows unchanged
-            console.log(task + " description:" + task.description);
-            row.find(".importance").val(task.importance);
-            row.find(".urgency").val(task.urgency);
-            row.find(".planned.time").val(task.ptime);
-            row.find(".description").val(task.description);
-            row.find(".actual.time").val(task.atime);
-        }
+
+        let rowIndex = 2  // leave first 2 rows unchanged
+        tasks.forEach(function (task, index) {
+            let row = $(rows[rowIndex])
+            var matchingDescriptions = $(".description").filter(function (index) {
+                console.log("  $(this).val()"+$(this).val() +"  this.value "+this.value +"  ($(this).val()==task.description)"+($(this).val()==task.description));
+                return ($(this).val()==task.description);
+            })
+            console.log(" task.description " +  task.description + "   matchingDescriptions.length " + matchingDescriptions.length);
+            if (matchingDescriptions.length == 0) {
+                console.log(task + " description:" + task.description);
+                row.find(".importance").val(task.importance);
+                row.find(".urgency").val(task.urgency);
+                row.find(".planned.time").val(task.ptime);
+                row.find(".description").val(task.description);
+                row.find(".actual.time").val(task.atime);
+                rowIndex = rowIndex + 1
+            }
+        });
 
     }
     userAction();
@@ -420,6 +429,7 @@ getDateFromSelector = function (selector) {
     var date = new Date();
     date.setHours(parseInt(splitVal[0]));
     date.setMinutes(parseInt(splitVal[1]));
+    console.log("splitVal[0] "+splitVal[0]+"   splitVal[1] "+splitVal[1]+"   date "+date+"   splitVal "+splitVal)
     return date;
 };
 
