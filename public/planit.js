@@ -249,10 +249,10 @@ readFromDb = function (key) {
         tasks.forEach(function (task, index) {
             let row = $(rows[rowIndex])
             var matchingDescriptions = $(".description").filter(function (index) {
-                console.log("  $(this).val()"+$(this).val() +"  this.value "+this.value +"  ($(this).val()==task.description)"+($(this).val()==task.description));
-                return ($(this).val()==task.description);
+                console.log("  $(this).val()" + $(this).val() + "  this.value " + this.value + "  ($(this).val()==task.description)" + ($(this).val() == task.description));
+                return ($(this).val() == task.description);
             })
-            console.log(" task.description " +  task.description + "   matchingDescriptions.length " + matchingDescriptions.length);
+            console.log(" task.description " + task.description + "   matchingDescriptions.length " + matchingDescriptions.length);
             if (matchingDescriptions.length == 0) {
                 console.log(task + " description:" + task.description);
                 row.find(".importance").val(task.importance);
@@ -289,11 +289,11 @@ save = function () {
             "description": description
         });
     });
-    saveOpenTasks(tasks);
+    saveTasks(tasks);
     butterbar("Incomplete tasks saved.  ");
 }
 
-saveOpenTasks = function (tasks) {
+saveTasks = function (tasks) {
     const firstname = $("#firstname").val();
     const myBody = {
         name: {
@@ -316,9 +316,24 @@ saveOpenTasks = function (tasks) {
             body: JSON.stringify(theTasks), // string or object
         });
         const myJson = await response.json();
-        const key = myJson.name
     }
     userAction();
+
+    let user = firebase.auth().currentUser;
+    console.log("user " + user);
+    if (user != null) {
+        const uid = user.uid;
+        console.log("user.displayName " + user.displayName + "  user.email " + user.email + "  uid " + uid);
+
+        const putTasksToFirebase = async () => {
+            const response = await fetch('https://planit-48748.firebaseio.com/rest/saving-data/fireblog/users/' + uid + '.json', {
+                method: 'PUT',
+                body: JSON.stringify(theTasks), // string or object
+            });
+            const myJson = await response.json();
+        }
+        putTasksToFirebase();
+    }
 }
 
 butterbar = function (message) {
@@ -362,7 +377,6 @@ HHMMfromMilliseconds = function (milliseconds) {
     var minutes = milliseconds / (60 * 1000);
     var MM = minutes % 60;
     var HH = minutes / 60;
-    console.log("HH " + HH + "  MM " + MM);
     return Math.floor(HH) + ":" + zeroPad(Math.round(MM));
 };
 
@@ -396,25 +410,33 @@ updateStartDates = function (row) {
     var previous = $(row).prev("tr");
     var previous_wend = previous.find(".working.end").val();
     var previous_aend = previous.find(".actual.end").val();
+    var previous_pend = previous.find(".planned.end").val();
     var working_start = previous_aend || previous_wend;
+    var planned_start = previous_pend;
     $(row)
         .find(".working.start")
         .val(working_start);
     $(row)
         .find(".actual.start")
         .val(previous_aend);
+    $(row)
+        .find(".planned.start")
+        .val(planned_start);
 
     var minutes_text = row.find(".planned.time").val();
     if (isEmpty(minutes_text)) {
         return;
     }
     var minutes = minutes_text.length === 0 ? 0 : parseInt(minutes_text);
-    var getDateFromSelectr = getDateFromSelector(row.find(".working.start")); ////
-    var wend = getDateFromSelector(row.find(".working.start"))
+    var wend = getDateFromSelector(row.find('.working.start'))
         .addMinutes(minutes)
         .toHHMM();
-    console.log("wend " + wend + "   getDateFromSelectr " + getDateFromSelectr)
+    var pend = getDateFromSelector(row.find('.planned.start'))
+        .addMinutes(minutes)
+        .toHHMM();
+    console.log("pend " + pend + "   row.find('.planned.start') " + row.find('.planned.start'))
     row.find(".working.end").val(wend);
+    row.find(".planned.end").val(pend);
     if (previous_aend || previous_wend) {
         var uncle = row.next("tr");
         updateStartDates(uncle);
@@ -429,7 +451,7 @@ getDateFromSelector = function (selector) {
     var date = new Date();
     date.setHours(parseInt(splitVal[0]));
     date.setMinutes(parseInt(splitVal[1]));
-    console.log("splitVal[0] "+splitVal[0]+"   splitVal[1] "+splitVal[1]+"   date "+date+"   splitVal "+splitVal)
+    console.log("splitVal[0] " + splitVal[0] + "   splitVal[1] " + splitVal[1] + "   date " + date + "   splitVal " + splitVal)
     return date;
 };
 
