@@ -156,6 +156,8 @@ moveUp = function () {
     var thisRow = $(this).parents("tr");
     var previousRow = thisRow.prev("tr");
     $(previousRow).before($(thisRow));
+    updatePlannedTimes(thisRow);
+    updatePlannedTimes(previousRow);
     updateStartDates(thisRow);
 }
 
@@ -163,6 +165,8 @@ moveDown = function () {
     var thisRow = $(this).parents("tr");
     var nextRow = thisRow.next("tr");
     $(thisRow).before($(nextRow));
+    updatePlannedTimes(nextRow);
+    updatePlannedTimes(thisRow);
     updateStartDates(nextRow);
 }
 
@@ -403,6 +407,25 @@ updatePlannedTime = function (e) {
     updateStartDates(parent.next("tr"));
 };
 
+updatePlannedTimes = function (row) {
+    var previous = $(row).prev("tr");
+    var previous_pend = previous.find(".planned.end").val();
+    var planned_start = previous_pend;
+    $(row)
+        .find(".planned.start")
+        .val(planned_start);
+    var minutes_text = row.find(".planned.time").val();
+    if (isEmpty(minutes_text)) {
+        return;
+    }
+    var minutes = minutes_text.length === 0 ? 0 : parseInt(minutes_text);
+    console.log("pend " + pend + "   row.find('.planned.start') " + row.find('.planned.start'))
+    var pend = getDateFromSelector(row.find('.planned.start'))
+        .addMinutes(minutes)
+        .toHHMM();
+    row.find(".planned.end").val(pend);
+}
+
 updateStartDates = function (row) {
     if (typeof row == "undefined") {
         return;
@@ -410,18 +433,13 @@ updateStartDates = function (row) {
     var previous = $(row).prev("tr");
     var previous_wend = previous.find(".working.end").val();
     var previous_aend = previous.find(".actual.end").val();
-    var previous_pend = previous.find(".planned.end").val();
     var working_start = previous_aend || previous_wend;
-    var planned_start = previous_pend;
     $(row)
         .find(".working.start")
         .val(working_start);
     $(row)
         .find(".actual.start")
         .val(previous_aend);
-    $(row)
-        .find(".planned.start")
-        .val(planned_start);
 
     var minutes_text = row.find(".planned.time").val();
     if (isEmpty(minutes_text)) {
@@ -431,12 +449,8 @@ updateStartDates = function (row) {
     var wend = getDateFromSelector(row.find('.working.start'))
         .addMinutes(minutes)
         .toHHMM();
-    var pend = getDateFromSelector(row.find('.planned.start'))
-        .addMinutes(minutes)
-        .toHHMM();
-    console.log("pend " + pend + "   row.find('.planned.start') " + row.find('.planned.start'))
+
     row.find(".working.end").val(wend);
-    row.find(".planned.end").val(pend);
     if (previous_aend || previous_wend) {
         var uncle = row.next("tr");
         updateStartDates(uncle);
